@@ -1,6 +1,7 @@
 package io.openbas.injectors.ovh.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.pixee.security.BoundedLineReader;
 import io.openbas.execution.ExecutionContext;
 import io.openbas.injectors.ovh.config.OvhSmsConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +89,7 @@ public class OvhSmsService {
       in = new BufferedReader(new InputStreamReader(req.getErrorStream()));
     }
     StringBuilder response = new StringBuilder();
-    while ((inputLine = in.readLine()) != null) {
+    while ((inputLine = BoundedLineReader.readLine(in, 5_000_000)) != null) {
       response.append(inputLine);
     }
     in.close();
