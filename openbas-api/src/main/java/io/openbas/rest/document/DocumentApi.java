@@ -1,6 +1,7 @@
 package io.openbas.rest.document;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.github.pixee.security.Filenames;
 import io.openbas.config.OpenBASPrincipal;
 import io.openbas.database.model.*;
 import io.openbas.database.raw.RawDocument;
@@ -136,7 +137,7 @@ public class DocumentApi extends RestBehavior {
     @Transactional(rollbackOn = Exception.class)
     public Document uploadDocument(@Valid @RequestPart("input") DocumentCreateInput input,
                                    @RequestPart("file") MultipartFile file) throws Exception {
-        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        String extension = FilenameUtils.getExtension(Filenames.toSimpleFileName(file.getOriginalFilename()));
         String fileTarget = DigestUtils.md5Hex(file.getInputStream()) + "." + extension;
         Optional<Document> targetDocument = documentRepository.findByTarget(fileTarget);
         if (targetDocument.isPresent()) {
@@ -165,7 +166,7 @@ public class DocumentApi extends RestBehavior {
             fileService.uploadFile(fileTarget, file);
             Document document = new Document();
             document.setTarget(fileTarget);
-            document.setName(file.getOriginalFilename());
+            document.setName(Filenames.toSimpleFileName(file.getOriginalFilename()));
             document.setDescription(input.getDescription());
             if (!input.getExerciseIds().isEmpty()) {
                 document.setExercises(iterableToSet(exerciseRepository.findAllById(input.getExerciseIds())));
@@ -183,7 +184,7 @@ public class DocumentApi extends RestBehavior {
     @Transactional(rollbackOn = Exception.class)
     public Document upsertDocument(@Valid @RequestPart("input") DocumentCreateInput input,
                                    @RequestPart("file") MultipartFile file) throws Exception {
-        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        String extension = FilenameUtils.getExtension(Filenames.toSimpleFileName(file.getOriginalFilename()));
         String fileTarget = DigestUtils.md5Hex(file.getInputStream()) + "." + extension;
         Optional<Document> targetDocument = documentRepository.findByTarget(fileTarget);
         // Document already exists by hash
@@ -210,7 +211,7 @@ public class DocumentApi extends RestBehavior {
             document.setTags(tags);
             return documentRepository.save(document);
         } else {
-            Optional<Document> existingDocument = documentRepository.findByName(file.getOriginalFilename());
+            Optional<Document> existingDocument = documentRepository.findByName(Filenames.toSimpleFileName(file.getOriginalFilename()));
             if (existingDocument.isPresent()) {
                 Document document = existingDocument.get();
                 // Update doc
@@ -241,7 +242,7 @@ public class DocumentApi extends RestBehavior {
                 fileService.uploadFile(fileTarget, file);
                 Document document = new Document();
                 document.setTarget(fileTarget);
-                document.setName(file.getOriginalFilename());
+                document.setName(Filenames.toSimpleFileName(file.getOriginalFilename()));
                 document.setDescription(input.getDescription());
                 if (!input.getExerciseIds().isEmpty()) {
                     document.setExercises(iterableToSet(exerciseRepository.findAllById(input.getExerciseIds())));

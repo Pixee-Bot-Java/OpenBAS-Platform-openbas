@@ -27,6 +27,7 @@
         <commons-validator.version>1.9.0</commons-validator.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <jacoco-plugin.version>0.8.12</jacoco-plugin.version>
+        <versions.java-security-toolkit>1.2.0</versions.java-security-toolkit>
     </properties>
 
     <distributionManagement>
@@ -92,4 +93,13 @@
         <module>openbas-framework</module>
         <module>openbas-api</module>
     </modules>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.github.pixee</groupId>
+                <artifactId>java-security-toolkit</artifactId>
+                <version>${versions.java-security-toolkit}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
