@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.github.pixee.security.Filenames;
 import io.openbas.database.model.*;
 import io.openbas.database.raw.*;
 import io.openbas.database.repository.*;
@@ -256,7 +257,7 @@ public class InjectService {
             }
             // Writing the file in a temp dir
             Path tempDir = Files.createDirectory(Path.of(System.getProperty("java.io.tmpdir"), fileID));
-            Path tempFile = Files.createTempFile(tempDir, null, "." + FilenameUtils.getExtension(file.getOriginalFilename()));
+            Path tempFile = Files.createTempFile(tempDir, null, "." + FilenameUtils.getExtension(Filenames.toSimpleFileName(file.getOriginalFilename())));
             Files.write(tempFile, file.getBytes());
 
             CompletableFuture.delayedExecutor(FILE_STORAGE_DURATION, TimeUnit.MINUTES).execute(() -> {

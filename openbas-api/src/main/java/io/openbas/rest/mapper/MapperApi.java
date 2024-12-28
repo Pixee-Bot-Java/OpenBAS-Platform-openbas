@@ -1,6 +1,7 @@
 package io.openbas.rest.mapper;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import io.github.pixee.security.Filenames;
 import io.openbas.database.model.ImportMapper;
 import io.openbas.database.model.Scenario;
 import io.openbas.database.raw.RawPaginationImportMapper;
@@ -171,7 +172,7 @@ public class MapperApi extends RestBehavior {
     }
 
     private void validateExtension(MultipartFile file) {
-        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        String extension = FilenameUtils.getExtension(Filenames.toSimpleFileName(file.getOriginalFilename()));
         if (!ACCEPTED_FILE_TYPES.contains(extension)) {
             throw new UnsupportedMediaTypeException("Only the following file types are accepted : " + String.join(", ", ACCEPTED_FILE_TYPES));
         }
