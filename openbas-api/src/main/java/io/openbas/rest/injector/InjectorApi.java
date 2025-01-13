@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import io.openbas.config.RabbitmqConfig;
 import io.openbas.database.model.AttackPattern;
 import io.openbas.database.model.Injector;
@@ -308,7 +310,7 @@ public class InjectorApi extends RestBehavior {
             in = getClass().getResourceAsStream("/implants" + resourcePath + filename);
             if (in == null) { // Dev mode, get from artifactory
                 filename = "openbas-implant-latest.exe";
-                in = new BufferedInputStream(new URL(JFROG_BASE +  resourcePath + filename).openStream());
+                in = new BufferedInputStream(Urls.create(JFROG_BASE +  resourcePath + filename, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS).openStream());
             }
         }
         if (platform.equals("linux") || platform.equals("macos")) {
@@ -317,7 +319,7 @@ public class InjectorApi extends RestBehavior {
             in = getClass().getResourceAsStream("/implants" + resourcePath + filename);
             if (in == null) { // Dev mode, get from artifactory
                 filename = "openbas-implant-latest";
-                in = new BufferedInputStream(new URL(JFROG_BASE + resourcePath + filename).openStream());
+                in = new BufferedInputStream(Urls.create(JFROG_BASE + resourcePath + filename, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS).openStream());
             }
         }
         if (in != null) {
