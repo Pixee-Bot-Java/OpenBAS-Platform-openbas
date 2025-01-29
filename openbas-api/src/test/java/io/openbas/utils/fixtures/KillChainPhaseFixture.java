@@ -2,6 +2,7 @@ package io.openbas.utils.fixtures;
 
 import io.openbas.database.model.KillChainPhase;
 import jakarta.validation.constraints.NotBlank;
+import java.security.SecureRandom;
 
 import java.util.Random;
 
@@ -9,7 +10,7 @@ import static java.lang.String.valueOf;
 
 public class KillChainPhaseFixture {
 
-  private static final Random RANDOM = new Random();
+  private static final Random RANDOM = new SecureRandom();
 
   public static KillChainPhase getKillChainPhase(@NotBlank final String name) {
     KillChainPhase killChainPhase = new KillChainPhase();
