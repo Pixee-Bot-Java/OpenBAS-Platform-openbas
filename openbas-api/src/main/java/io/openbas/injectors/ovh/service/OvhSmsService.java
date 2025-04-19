@@ -1,6 +1,8 @@
 package io.openbas.injectors.ovh.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import io.openbas.execution.ExecutionContext;
 import io.openbas.injectors.ovh.config.OvhSmsConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +55,7 @@ public class OvhSmsService {
 
   public String sendSms(ExecutionContext context, String phone, String message) throws Exception {
     String smsMessage = buildContextualContent(message, context);
-    URL QUERY = new URL("https://eu.api.ovh.com/1.0/sms/" + config.getService() + "/jobs");
+    URL QUERY = Urls.create("https://eu.api.ovh.com/1.0/sms/" + config.getService() + "/jobs", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     String isoMessage = new String(smsMessage.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
     OvhSmsMessage ovhSmsMessage = new OvhSmsMessage(singletonList(phone), isoMessage, config.getSender());
     String smsBody = mapper.writeValueAsString(ovhSmsMessage);
