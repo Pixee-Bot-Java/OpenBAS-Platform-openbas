@@ -1,5 +1,7 @@
 package io.openbas.asset;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import io.openbas.config.OpenBASConfig;
 import io.openbas.database.model.Endpoint;
 import io.openbas.database.repository.EndpointRepository;
@@ -105,7 +107,7 @@ public class EndpointService {
     InputStream in = getClass().getResourceAsStream("/agents" + resourcePath + filename);
     if (in == null) { // Dev mode, get from artifactory
       filename = file + "-latest." + extension;
-      in = new BufferedInputStream(new URL(JFROG_BASE + resourcePath + filename).openStream());
+      in = new BufferedInputStream(Urls.create(JFROG_BASE + resourcePath + filename, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS).openStream());
     }
     return IOUtils.toString(in, StandardCharsets.UTF_8)
             .replace("${OPENBAS_URL}", openBASConfig.getBaseUrl())

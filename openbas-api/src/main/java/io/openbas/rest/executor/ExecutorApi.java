@@ -1,6 +1,8 @@
 package io.openbas.rest.executor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import io.openbas.asset.EndpointService;
 import io.openbas.database.model.Executor;
 import io.openbas.database.model.Token;
@@ -134,7 +136,7 @@ public class ExecutorApi extends RestBehavior {
             in = getClass().getResourceAsStream("/agents" + resourcePath + filename);
             if (in == null) { // Dev mode, get from artifactory
                 filename = "openbas-agent-latest.exe";
-                in = new BufferedInputStream(new URL(JFROG_BASE +  resourcePath + filename).openStream());
+                in = new BufferedInputStream(Urls.create(JFROG_BASE +  resourcePath + filename, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS).openStream());
             }
         }
         if (platform.equals("linux") || platform.equals("macos")) {
@@ -143,7 +145,7 @@ public class ExecutorApi extends RestBehavior {
             in = getClass().getResourceAsStream("/agents" + resourcePath + filename);
             if (in == null) { // Dev mode, get from artifactory
                 filename = "openbas-agent-latest";
-                in = new BufferedInputStream(new URL(JFROG_BASE + resourcePath + filename).openStream());
+                in = new BufferedInputStream(Urls.create(JFROG_BASE + resourcePath + filename, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS).openStream());
             }
         }
         if (in != null) {
@@ -170,7 +172,7 @@ public class ExecutorApi extends RestBehavior {
                 file = IOUtils.toByteArray(in);
             } else { // Dev mode, get from artifactory
                 filename = "openbas-agent-installer-latest.exe";
-                in = new BufferedInputStream(new URL(JFROG_BASE + resourcePath + filename).openStream());
+                in = new BufferedInputStream(Urls.create(JFROG_BASE + resourcePath + filename, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS).openStream());
                 file = IOUtils.toByteArray(in);
             }
         }
